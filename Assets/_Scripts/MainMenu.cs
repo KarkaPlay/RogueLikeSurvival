@@ -15,6 +15,34 @@ public class MainMenu : MonoBehaviour
 
     private List<Button> buttons = new List<Button>();
 
+    
+    [System.Serializable]
+    public class MenuLogin
+    {
+        public TMP_Text login, password;
+    }
+    
+    [System.Serializable]
+    public class MenuRegistration
+    {
+        public TMP_Text login, password, password2, nickname;
+    }
+    
+    public MenuLogin menuLogin;
+    public MenuRegistration menuRegistration;
+    
+    [SerializeField] private WebManager webManager;
+    
+    public void Login()
+    {
+        webManager.Login(menuLogin.login.text, menuLogin.password.text);
+    }
+    
+    public void Registration()
+    {
+        webManager.Registration(menuRegistration.login.text, menuRegistration.password.text, menuRegistration.password2.text, menuRegistration.nickname.text);
+    }
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -26,7 +54,6 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         SceneManager.LoadScene("Main");
-        
     }
 
     public void ShowSettings()
