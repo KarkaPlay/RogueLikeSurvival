@@ -19,6 +19,7 @@ public class SwordMeleeCombat : Combat
                     DealDamage(enemyStats);
                 }
             }
+            _attackCooldown = 1 / _attackPerSecond;
         }
     }
 

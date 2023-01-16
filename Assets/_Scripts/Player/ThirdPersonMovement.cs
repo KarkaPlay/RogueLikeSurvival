@@ -13,17 +13,21 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private float turnSmoothTime = 0.1f;
     private float turnSmoothVelocity;
 
+    [SerializeField] private LayerMask groundMask;
+    private Camera _mainCamera;
+
     // Start is called before the first frame update
     private void Start()
     {
         playerController = GetComponent<CharacterController>();
+        _mainCamera = Camera.main;
     }
 
     // Update is called once per frame
     private void Update()
     {
         GatherInput();
-        Look();
+        Aim();
     }
 
     private void FixedUpdate()
@@ -39,7 +43,40 @@ public class ThirdPersonMovement : MonoBehaviour
         _input.Normalize();
     }
 
-    private void Look()
+    private void Aim()
+    {
+        var (success, position) = GetMousePosition();
+        if (success)
+        {
+            // Calculate the direction
+            var direction = position - transform.position;
+
+            // You might want to delete this line.
+            // Ignore the height difference.
+            direction.y = 0;
+
+            // Make the transform look in the direction.
+            transform.forward = direction;
+        }
+    }
+
+    private (bool success, Vector3 position) GetMousePosition()
+    {
+        var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, groundMask))
+        {
+            // The Raycast hit something, return with the position.
+            return (success: true, position: hitInfo.point);
+        }
+        else
+        {
+            // The Raycast did not hit anything.
+            return (success: false, position: Vector3.zero);
+        }
+    }
+
+    private void Move()
     {
         if (_input.magnitude >= 0.1f)
         {
@@ -48,15 +85,7 @@ public class ThirdPersonMovement : MonoBehaviour
             // transform.rotation = Quaternion.Euler(0, angle, 0);
 
             _moveDirection = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
-        }
 
-        //_rb.angularVelocity = new Vector3(0, _rb.angularVelocity.y, 0);
-    }
-
-    private void Move()
-    {
-        if (_input.magnitude >= 0.1f)
-        {
             playerController.Move(_moveDirection.normalized * speed * Time.fixedDeltaTime);
         }
     }

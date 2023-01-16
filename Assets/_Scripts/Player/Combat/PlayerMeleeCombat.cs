@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMeleeCombat : MonoBehaviour
 {
     private Camera _mainCamera;
+    private Vector3 target;
 
     private void Start()
     {
@@ -20,9 +21,16 @@ public class PlayerMeleeCombat : MonoBehaviour
             if (hittedObject.transform != transform)
             {
                 transform.LookAt(hittedObject.point);
+                target = hittedObject.point;
                 transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
             }
             //transform.LookAt(hittedObject.point);// - transform.position;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Vector3 boxPosition = target == null ? Vector3.zero : target;
+        Gizmos.DrawWireSphere(boxPosition, 1);
     }
 }

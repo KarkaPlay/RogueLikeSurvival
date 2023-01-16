@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Combat : MonoBehaviour
 {
-    [SerializeField] protected int _damage;
-    [SerializeField] private float _attackPerSecond;
+    [SerializeField] public float _damage;
+    [SerializeField] public float _attackPerSecond;
     protected float _attackCooldown;
 
     protected virtual void Update()
@@ -22,7 +22,17 @@ public class Combat : MonoBehaviour
         if (_attackCooldown < 0)
         {
             characterStats.TakeDamage(_damage);
-            _attackCooldown = 1 / _attackPerSecond;
         }
+    }
+
+    public float GetDamageValue()
+    {
+        return _damage;
+    }
+
+    public virtual void Improve()
+    {
+        _damage *= 1.2f;
+        _attackPerSecond *= 1.2f;
     }
 }

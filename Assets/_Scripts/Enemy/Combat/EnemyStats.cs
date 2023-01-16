@@ -4,22 +4,12 @@ using UnityEngine;
 
 public class EnemyStats : CharacterStats
 {
-    public GameObject expPrefab;
-    
-    void Start()
-    {
-        Invoke("Die", 10);
-    }
-    
+    [SerializeField] private ExpSphere expSphere;
+
     protected override void Die()
     {
         base.Die();
-        SpawnExp();
+        Instantiate(expSphere, transform.position, Quaternion.identity);
         Destroy(gameObject);
-    }
-
-    private void SpawnExp()
-    {
-        Instantiate(expPrefab, transform.position, Quaternion.identity);
     }
 }
